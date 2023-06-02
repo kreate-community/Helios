@@ -8,7 +8,7 @@
 // Website:       https://www.hyperion-bt.org
 // Repository:    https://github.com/hyperion-bt/helios
 // Version:       0.13.38
-// Last update:   May 2023
+// Last update:   June 2023
 // License type:  BSD-3-Clause
 //
 //
@@ -42049,6 +42049,7 @@ export class CoinSelection {
  *     usedAddresses: Promise<Address[]>,
  *     unusedAddresses: Promise<Address[]>,
  *     utxos: Promise<UTxO[]>,
+ *     collateral: Promise<UTxO[]>,
  *     signTx(tx: Tx): Promise<Signature[]>,
  *     submitTx(tx: Tx): Promise<TxId>
  * }} Wallet
@@ -42060,8 +42061,12 @@ export class CoinSelection {
  *     getUsedAddresses(): Promise<string[]>,
  *     getUnusedAddresses(): Promise<string[]>,
  *     getUtxos(): Promise<string[]>,
+ *     getCollateral(): Promise<string[]>,
  *     signTx(txHex: string, partialSign: boolean): Promise<string>,
- *     submitTx(txHex: string): Promise<string>
+ *     submitTx(txHex: string): Promise<string>,
+ *     experimental: {
+ *         getCollateral(): Promise<string[]>
+ *     },
  * }} Cip30Handle
  */
 
@@ -42072,7 +42077,7 @@ export class Cip30Wallet {
     #handle;
 
     /**
-     * @param {Cip30Handle} handle 
+     * @param {Cip30Handle} handle
      */
     constructor(handle) {
         this.#handle = handle;
@@ -42107,17 +42112,25 @@ export class Cip30Wallet {
     }
 
     /**
-     * @param {Tx} tx 
+     * @type {Promise<UTxO[]>}
+     */
+    get collateral() {
+        const getCollateral = this.#handle.getCollateral || this.#handle.experimental.getCollateral;
+        return getCollateral().then(utxos => utxos.map(u => UTxO.fromCbor(hexToBytes(u))));
+    }
+
+    /**
+     * @param {Tx} tx
      * @returns {Promise<Signature[]>}
      */
     async signTx(tx) {
         const res = await this.#handle.signTx(bytesToHex(tx.toCbor()), true);
-        
+
         return TxWitnesses.fromCbor(hexToBytes(res)).signatures;
     }
 
     /**
-     * @param {Tx} tx 
+     * @param {Tx} tx
      * @returns {Promise<TxId>}
      */
     async submitTx(tx) {
@@ -42131,7 +42144,7 @@ export class WalletHelper {
     #wallet;
 
     /**
-     * @param {Wallet} wallet 
+     * @param {Wallet} wallet
      */
     constructor(wallet) {
         this.#wallet = wallet;
@@ -42200,10 +42213,10 @@ export class WalletHelper {
     }
 
     /**
-     * @param {Value} amount 
+     * @param {Value} amount
      * @param {(allUtxos: UTxO[], anount: Value) => [UTxO[], UTxO[]]} algorithm
      * @returns {Promise<[UTxO[], UTxO[]]>} - [picked, not picked that can be used as spares]
-     */ 
+     */
     async pickUtxos(amount, algorithm = CoinSelection.selectSmallestFirst) {
         return algorithm(await this.#wallet.utxos, amount);
     }
@@ -42264,6 +42277,7 @@ export class WalletHelper {
         return false;
     }
 }
+
 
 
 //////////////////////
@@ -42473,7 +42487,7 @@ export class WalletEmulator {
     #privateKey;
     #publicKey;
 
-    /** 
+    /**
      * @param {Network} network
      * @param {NumberGenerator} random - used to generate the private key
      */
@@ -42550,6 +42564,15 @@ export class WalletEmulator {
     }
 
     /**
+     * @type {Promise<UTxO[]>}
+     */
+     get collateral() {
+        return new Promise((resolve, _) => {
+            resolve([])
+        });
+    }
+
+    /**
      * Simply assumed the tx needs to by signed by this wallet without checking.
      * @param {Tx} tx
      * @returns {Promise<Signature[]>}
@@ -42564,7 +42587,7 @@ export class WalletEmulator {
     }
 
     /**
-     * @param {Tx} tx 
+     * @param {Tx} tx
      * @returns {Promise<TxId>}
      */
     async submitTx(tx) {
@@ -42592,9 +42615,9 @@ class GenesisTx {
 
     /**
      * @param {number} id
-     * @param {Address} address 
+     * @param {Address} address
      * @param {bigint} lovelace
-     * @param {Assets} assets 
+     * @param {Assets} assets
      */
     constructor(id, address, lovelace, assets) {
         this.#id = id;
@@ -42619,9 +42642,9 @@ class GenesisTx {
     }
 
     /**
-     * @param {TxId} txId 
-     * @param {bigint} utxoIdx 
-     * @returns 
+     * @param {TxId} txId
+     * @param {bigint} utxoIdx
+     * @returns
      */
     consumes(txId, utxoIdx) {
         return false;
@@ -42659,7 +42682,7 @@ class RegularTx {
     #tx;
 
     /**
-     * @param {Tx} tx 
+     * @param {Tx} tx
      */
     constructor(tx) {
         this.#tx = tx;
@@ -42686,8 +42709,8 @@ class RegularTx {
     }
 
     /**
-     * @param {Address} address 
-     * @param {UTxO[]} utxos 
+     * @param {Address} address
+     * @param {UTxO[]} utxos
      * @returns {UTxO[]}
      */
     collectUtxos(address, utxos) {
@@ -42739,7 +42762,7 @@ export class NetworkEmulator {
     #blocks;
 
     /**
-     * @param {number} seed 
+     * @param {number} seed
      */
     constructor(seed = 0) {
         this.#slot = 0n;
@@ -42752,7 +42775,7 @@ export class NetworkEmulator {
     /**
      * Create a copy of networkParams that always has access to the current slot
      *  (for setting the validity range automatically)
-     * @param {NetworkParams} networkParams 
+     * @param {NetworkParams} networkParams
      * @returns {NetworkParams}
      */
     initNetworkParams(networkParams) {
@@ -42780,9 +42803,9 @@ export class NetworkEmulator {
 
     /**
      * Creates a UTxO using a GenesisTx.
-     * @param {WalletEmulator} wallet 
-     * @param {bigint} lovelace 
-     * @param {Assets} assets 
+     * @param {WalletEmulator} wallet
+     * @param {bigint} lovelace
+     * @param {Assets} assets
      */
     createUtxo(wallet, lovelace, assets = new Assets([])) {
         if (lovelace != 0n || !assets.isZero()) {
@@ -42800,7 +42823,7 @@ export class NetworkEmulator {
 
     /**
      * Mint a block with the current mempool, and advance the slot.
-     * @param {bigint} nSlots 
+     * @param {bigint} nSlots
      */
     tick(nSlots) {
         if (this.#mempool.length > 0) {
@@ -42832,8 +42855,8 @@ export class NetworkEmulator {
     }
 
     /**
-     * @param {TxId} txId 
-     * @param {bigint} utxoIdx 
+     * @param {TxId} txId
+     * @param {bigint} utxoIdx
      * @returns {boolean}
      */
     isConsumed(txId, utxoIdx) {
@@ -42847,7 +42870,7 @@ export class NetworkEmulator {
     }
 
     /**
-     * @param {Tx} tx 
+     * @param {Tx} tx
      * @returns {Promise<TxId>}
      */
     async submitTx(tx) {
@@ -42861,6 +42884,7 @@ export class NetworkEmulator {
         return tx.id();
     }
 }
+
 
 /**
  * The following functions are used for some tests in ./test/, and aren't
