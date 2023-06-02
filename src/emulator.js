@@ -35,6 +35,10 @@ import {
     UTxO
 } from "./tx-builder.js";
 
+import {
+    DataSignature
+} from "./wallet.js";
+
 
 /**
  * @typedef {import("./wallets.js").Wallet} Wallet
@@ -67,7 +71,7 @@ export class WalletEmulator {
 
     /**
      * Generate a private key from a random number generator (not cryptographically secure!)
-     * @param {NumberGenerator} random 
+     * @param {NumberGenerator} random
      * @returns {number[]} - Ed25519 private key is 32 bytes long
      */
     static genPrivateKey(random) {
@@ -136,6 +140,15 @@ export class WalletEmulator {
         return new Promise((resolve, _) => {
             resolve([])
         });
+    }
+
+    /**
+     * @param {Address} address
+     * @param {string} data
+     * @returns {Promise<DataSignature>}
+     */
+     async signData(address, data) {
+        throw new Error("not yet implemented");
     }
 
     /**

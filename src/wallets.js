@@ -25,6 +25,13 @@ import {
     CoinSelection
 } from "./coinselection.js";
 
+// Where best to put this?
+/**
+ * @typedef {{
+ *     signature: string,
+ *     key: string,
+ * }} DataSignature
+ */
 
 /**
  * @typedef {{
@@ -33,6 +40,7 @@ import {
  *     unusedAddresses: Promise<Address[]>,
  *     utxos: Promise<UTxO[]>,
  *     collateral: Promise<UTxO[]>,
+ *     signData(address: Address, data: string): Promise<DataSignature>,
  *     signTx(tx: Tx): Promise<Signature[]>,
  *     submitTx(tx: Tx): Promise<TxId>
  * }} Wallet
@@ -45,6 +53,7 @@ import {
  *     getUnusedAddresses(): Promise<string[]>,
  *     getUtxos(): Promise<string[]>,
  *     getCollateral(): Promise<string[]>,
+ *     signData(address: string, data: string): Promise<DataSignature>,
  *     signTx(txHex: string, partialSign: boolean): Promise<string>,
  *     submitTx(txHex: string): Promise<string>,
  *     experimental: {
@@ -100,6 +109,15 @@ export class Cip30Wallet {
     get collateral() {
         const getCollateral = this.#handle.getCollateral || this.#handle.experimental.getCollateral;
         return getCollateral().then(utxos => utxos.map(u => UTxO.fromCbor(hexToBytes(u))));
+    }
+
+    /**
+     * @param {Address} address
+     * @param {string} data
+     * @returns {Promise<DataSignature>}
+     */
+     async signData(address, data) {
+        return this.#handle.signData(address.toHex(), data);
     }
 
     /**
