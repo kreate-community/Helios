@@ -38,6 +38,7 @@
     "off-chain"
   ],
   "devDependencies": {
+    "@types/node": "^20.2.5",
     "typescript": "^4.9.5"
   }
 }

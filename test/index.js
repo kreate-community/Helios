@@ -7,7 +7,7 @@ import { correctDir } from "../utils/util.js";
 correctDir();
 
 /**
- * @param {string[]} paths 
+ * @param {string[]} paths
  * @returns {Promise<void>}
  */
 async function runTests(paths) {
@@ -17,11 +17,11 @@ async function runTests(paths) {
 
 			try {
 				await (await import(p)).default()
-	
+
 				console.log(`PASSED  ${p}`)
 			} catch (e) {
 				console.log(`FAILED  ${p}`)
-	
+
 				throw e
 			}
 		})
@@ -51,7 +51,7 @@ async function main2() {
 }
 
 /**
- * @param {string} dir 
+ * @param {string} dir
  * @returns {Promise<string[]>}
  */
 async function listFiles(dir) {
@@ -67,9 +67,9 @@ async function listFiles(dir) {
                 return listFiles(res)
             }
         } else {
-            return res 
+            return res
         }
-    })) 
+    }))
 
     return files.flat().filter(name => name.endsWith(".test.js"))
 }

@@ -10883,14 +10883,14 @@ export function isUplcBuiltin(name, strict = false) {
  * @typedef {"testing" | "minting" | "spending" | "staking" | "linking" | "module" | "unknown"} ScriptPurpose
  */
 
-/** 
+/**
  * a UplcValue is passed around by Plutus-core expressions.
  */
 export class UplcValue {
 	#site;
 
 	/**
-	 * @param {Site} site 
+	 * @param {Site} site
 	 */
 	constructor(site) {
 		assert(site != undefined && (site instanceof Site));
@@ -10898,7 +10898,7 @@ export class UplcValue {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -10908,7 +10908,7 @@ export class UplcValue {
 	/**
 	 * Return a copy of the UplcValue at a different Site.
      * @internal
-	 * @param {Site} newSite 
+	 * @param {Site} newSite
 	 * @returns {UplcValue}
 	 */
 	copy(newSite) {
@@ -10943,8 +10943,8 @@ export class UplcValue {
 	/**
 	 * Throws an error because most values can't be called (overridden by UplcAnon)
      * @internal
-	 * @param {UplcRte | UplcStack} rte 
-	 * @param {Site} site 
+	 * @param {UplcRte | UplcStack} rte
+	 * @param {Site} site
 	 * @param {UplcValue} value
 	 * @returns {Promise<UplcValue>}
 	 */
@@ -10954,7 +10954,7 @@ export class UplcValue {
 
 	/**
      * @internal
-	 * @param {UplcRte | UplcStack} rte 
+	 * @param {UplcRte | UplcStack} rte
 	 * @returns {Promise<UplcValue>}
 	 */
 	async eval(rte) {
@@ -10988,7 +10988,7 @@ export class UplcValue {
 	get string() {
 		throw this.site.typeError(`expected a Plutus-core string, got '${this.toString()}'`);
 	}
-	
+
 	/**
 	 * @type {boolean}
 	 */
@@ -11102,7 +11102,7 @@ export class UplcValue {
 	 */
 	toFlatValue(bitWriter) {
 		bitWriter.write('1' + this.typeBits() + '0');
-		
+
 		this.toFlatValueInternal(bitWriter);
 	}
 }
@@ -11114,14 +11114,14 @@ export class UplcType {
 	#typeBits;
 
 	/**
-	 * @param {string} typeBits 
+	 * @param {string} typeBits
 	 */
 	constructor(typeBits) {
 		this.#typeBits = typeBits;
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -11138,7 +11138,7 @@ export class UplcType {
 	}
 
 	/**
-	 * @param {UplcValue} value 
+	 * @param {UplcValue} value
 	 * @returns {boolean}
 	 */
 	isSameType(value) {
@@ -11255,9 +11255,9 @@ export class UplcRte {
 	#builtinCost;
 
 
-	
+
 	/**
-	 * @param {UplcRTECallbacksInternal} callbacks 
+	 * @param {UplcRTECallbacksInternal} callbacks
 	 * @param {null | NetworkParams} networkParams
 	 */
 	constructor(callbacks = DEFAULT_UPLC_RTE_CALLBACKS, networkParams = null) {
@@ -11308,7 +11308,7 @@ export class UplcRte {
 	}
 
 	/**
-	 * @param {string | RuntimeError} err 
+	 * @param {string | RuntimeError} err
 	 * @returns {UplcValue}
 	 */
 	error(err) {
@@ -11319,7 +11319,7 @@ export class UplcRte {
 	/**
 	 * @param {string} name - for breakdown
 	 * @param {boolean} isTerm
-	 * @param {Cost} cost 
+	 * @param {Cost} cost
 	 */
 	incrCost(name, isTerm, cost) {
 		if (cost.mem <= 0n || cost.cpu <= 0n) {
@@ -11392,8 +11392,8 @@ export class UplcRte {
 	}
 
 	/**
-	 * @param {string} name 
-	 * @param {UplcValue[]} args 
+	 * @param {string} name
+	 * @param {UplcValue[]} args
 	 * @returns {Promise<UplcValue>}
 	 */
 	callMacro(name, args) {
@@ -11415,7 +11415,7 @@ export class UplcRte {
 
 	/**
 	 * Gets variable using Debruijn index. Throws error here because UplcRTE is the stack root and doesn't contain any values.
-	 * @param {number} i 
+	 * @param {number} i
 	 * @returns {UplcValue}
 	 */
 	get(i) {
@@ -11424,8 +11424,8 @@ export class UplcRte {
 
 	/**
 	 * Creates a child stack.
-	 * @param {UplcValue} value 
-	 * @param {?string} valueName 
+	 * @param {UplcValue} value
+	 * @param {?string} valueName
 	 * @returns {UplcStack}
 	 */
 	push(value, valueName = null) {
@@ -11434,7 +11434,7 @@ export class UplcRte {
 
 	/**
 	 * Calls the print callback (or does nothing if print callback isn't defined)
-	 * @param {string | string[]} rawMsg 
+	 * @param {string | string[]} rawMsg
 	 * @returns {Promise<void>}
 	 */
 	async print(rawMsg) {
@@ -11451,8 +11451,8 @@ export class UplcRte {
 
 	/**
 	 * Calls the onStartCall callback.
-	 * @param {Site} site 
-	 * @param {UplcRawStack} rawStack 
+	 * @param {Site} site
+	 * @param {UplcRawStack} rawStack
 	 * @returns {Promise<void>}
 	 */
 	async startCall(site, rawStack) {
@@ -11468,9 +11468,9 @@ export class UplcRte {
 	/**
 	 * Calls the onEndCall callback if '#notifyCalls == true'.
 	 * '#notifyCalls' is set to true if 'rawStack == #marker'.
-	 * @param {Site} site 
-	 * @param {UplcRawStack} rawStack 
-	 * @param {UplcValue} result 
+	 * @param {Site} site
+	 * @param {UplcRawStack} rawStack
+	 * @param {UplcValue} result
 	 * @returns {Promise<void>}
 	 */
 	async endCall(site, rawStack, result) {
@@ -11530,7 +11530,7 @@ class UplcStack {
 			this.#parent.incrLambdaCost()
 		}
 	}
-	
+
 	incrDelayCost() {
 		if (this.#parent !== null) {
 			this.#parent.incrDelayCost();
@@ -11574,7 +11574,7 @@ class UplcStack {
 	/**
 	 * Gets a value using the Debruijn index. If 'i == 1' then the current value is returned.
 	 * Otherwise 'i' is decrement and passed to the parent stack.
-	 * @param {number} i 
+	 * @param {number} i
 	 * @returns {UplcValue}
 	 */
 	get(i) {
@@ -11595,11 +11595,11 @@ class UplcStack {
 			}
 		}
 	}
-	
+
 	/**
-	 * 
-	 * @param {string} name 
-	 * @param {UplcValue[]} args 
+	 *
+	 * @param {string} name
+	 * @param {UplcValue[]} args
 	 * @returns {Promise<UplcValue>}
 	 */
 	async callMacro(name, args) {
@@ -11612,8 +11612,8 @@ class UplcStack {
 
 	/**
 	 * Instantiates a child stack.
-	 * @param {UplcValue} value 
-	 * @param {?string} valueName 
+	 * @param {UplcValue} value
+	 * @param {?string} valueName
 	 * @returns {UplcStack}
 	 */
 	push(value, valueName = null) {
@@ -11622,7 +11622,7 @@ class UplcStack {
 
 	/**
 	 * Calls the onPrint callback in the RTE (root of stack).
-	 * @param {string} msg 
+	 * @param {string} msg
 	 * @returns {Promise<void>}
 	 */
 	async print(msg) {
@@ -11633,8 +11633,8 @@ class UplcStack {
 
 	/**
 	 * Calls the onStartCall callback in the RTE (root of stack).
-	 * @param {Site} site 
-	 * @param {UplcRawStack} rawStack 
+	 * @param {Site} site
+	 * @param {UplcRawStack} rawStack
 	 * @returns {Promise<void>}
 	 */
 	async startCall(site, rawStack) {
@@ -11643,7 +11643,7 @@ class UplcStack {
 		}
 	}
 
-	/** 
+	/**
 	 * Calls the onEndCall callback in the RTE (root of stack).
 	 * @param {Site} site
 	 * @param {UplcRawStack} rawStack
@@ -11656,7 +11656,7 @@ class UplcStack {
 		}
 	}
 
-	/** 
+	/**
 	 * @returns {UplcRawStack}
 	 */
 	toList() {
@@ -11674,7 +11674,7 @@ class UplcStack {
  */
 export class UplcAny extends UplcValue {
 	/**
-	 * @param {Site} site 
+	 * @param {Site} site
 	 */
 	constructor(site) {
 		super(site);
@@ -11682,7 +11682,7 @@ export class UplcAny extends UplcValue {
 
 	/**
 	 * Should never be part of the uplc ast
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -11697,7 +11697,7 @@ export class UplcAny extends UplcValue {
 	}
 
 	/**
-	 * @param {Site} newSite 
+	 * @param {Site} newSite
 	 * @returns {UplcAny}
 	 */
 	copy(newSite) {
@@ -11707,9 +11707,9 @@ export class UplcAny extends UplcValue {
 	}
 
 	/**
-	 * @param {UplcRte | UplcStack} rte 
-	 * @param {Site} site 
-	 * @param {UplcValue} value 
+	 * @param {UplcRte | UplcStack} rte
+	 * @param {Site} site
+	 * @param {UplcValue} value
 	 * @returns {Promise<UplcValue>}
 	 */
 	async call(rte, site, value) {
@@ -11823,8 +11823,8 @@ export class UplcAnon extends UplcValue {
 	#allowAnyArgs;
 
 	/**
-	 * 
-	 * @param {Site} site 
+	 *
+	 * @param {Site} site
 	 * @param {UplcAnonProps} props
 	 */
 	constructor(site, props) {
@@ -11855,7 +11855,7 @@ export class UplcAnon extends UplcValue {
 
 	/**
 	 * Should never be part of the uplc ast
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -11870,7 +11870,7 @@ export class UplcAnon extends UplcValue {
 	}
 
 	/**
-	 * @param {Site} newSite 
+	 * @param {Site} newSite
 	 * @returns {UplcAnon}
 	 */
 	copy(newSite) {
@@ -11902,9 +11902,9 @@ export class UplcAnon extends UplcValue {
 	}
 
 	/**
-	 * @param {UplcRte | UplcStack} rte 
-	 * @param {Site} site 
-	 * @param {UplcValue} value 
+	 * @param {UplcRte | UplcStack} rte
+	 * @param {Site} site
+	 * @param {UplcValue} value
 	 * @returns {Promise<UplcValue>}
 	 */
 	async call(rte, site, value) {
@@ -11999,7 +11999,7 @@ export class UplcDelayedValue extends UplcValue {
 
 	/**
 	 * Should never be part of ast
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -12011,7 +12011,7 @@ export class UplcDelayedValue extends UplcValue {
 	}
 
 	/**
-	 * @param {Site} newSite 
+	 * @param {Site} newSite
 	 * @returns {UplcValue}
 	 */
 	copy(newSite) {
@@ -12085,7 +12085,7 @@ export class UplcInt extends UplcValue {
 	/**
 	 * Constructs a UplcInt without requiring a Site
 	 * @param {bigint | number} value
-	 * @returns {UplcInt} 
+	 * @returns {UplcInt}
 	 */
 	static new(value) {
 		if (typeof value == 'number') {
@@ -12097,7 +12097,7 @@ export class UplcInt extends UplcValue {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -12110,9 +12110,9 @@ export class UplcInt extends UplcValue {
 
 	/**
 	 * Creates a UplcInt wrapped in a UplcConst, so it can be used a term
-	 * @param {Site} site 
-	 * @param {bigint} value 
-	 * @returns 
+	 * @param {Site} site
+	 * @param {bigint} value
+	 * @returns
 	 */
 	static newSignedTerm(site, value) {
 		return new UplcConst(new UplcInt(site, value, true));
@@ -12126,7 +12126,7 @@ export class UplcInt extends UplcValue {
 	}
 
 	/**
-	 * @param {Site} newSite 
+	 * @param {Site} newSite
 	 * @returns {UplcInt}
 	 */
 	copy(newSite) {
@@ -12142,7 +12142,7 @@ export class UplcInt extends UplcValue {
 
 	/**
 	 * Parses a single byte in the Plutus-core byte-list representation of an int
-	 * @param {number} b 
+	 * @param {number} b
 	 * @returns {number}
 	 */
 	static parseRawByte(b) {
@@ -12151,7 +12151,7 @@ export class UplcInt extends UplcValue {
 
 	/**
 	 * Returns true if 'b' is the last byte in the Plutus-core byte-list representation of an int.
-	 * @param {number} b 
+	 * @param {number} b
 	 * @returns {boolean}
 	 */
 	static rawByteIsLast(b) {
@@ -12205,8 +12205,8 @@ export class UplcInt extends UplcValue {
 		}
 	}
 
-	/** 
-	 * Unapplies zigzag encoding 
+	/**
+	 * Unapplies zigzag encoding
 	 * @example
 	 * (new UplcInt(Site.dummy(), 1n, false)).toSigned().int == -1n
 	 * @returns {UplcInt}
@@ -12262,7 +12262,7 @@ export class UplcInt extends UplcValue {
 	 * Throws error if signed.
 	 * Used by encoding plutus core program version and debruijn indices.
 	 * @internal
-	 * @param {BitWriter} bitWriter 
+	 * @param {BitWriter} bitWriter
 	 */
 	toFlatUnsigned(bitWriter) {
 		assert(!this.signed);
@@ -12279,7 +12279,7 @@ export class UplcInt extends UplcValue {
 
 	/**
 	 * @internal
-	 * @param {BitWriter} bitWriter 
+	 * @param {BitWriter} bitWriter
 	 */
 	toFlatValueInternal(bitWriter) {
 		assert(this.signed);
@@ -12310,7 +12310,7 @@ export class UplcByteArray extends UplcValue {
 	/**
 	 * Construct a UplcByteArray without requiring a Site
 	 * @internal
-	 * @param {number[]} bytes 
+	 * @param {number[]} bytes
 	 * @returns {UplcByteArray}
 	 */
 	static new(bytes) {
@@ -12320,8 +12320,8 @@ export class UplcByteArray extends UplcValue {
 	/**
 	 * Creates new UplcByteArray wrapped in UplcConst so it can be used as a term.
 	 * @internal
-	 * @param {Site} site 
-	 * @param {number[]} bytes 
+	 * @param {Site} site
+	 * @param {number[]} bytes
 	 * @returns {UplcConst}
 	 */
 	static newTerm(site, bytes) {
@@ -12329,7 +12329,7 @@ export class UplcByteArray extends UplcValue {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -12348,7 +12348,7 @@ export class UplcByteArray extends UplcValue {
 
 	/**
 	 * @internal
-	 * @param {Site} newSite 
+	 * @param {Site} newSite
 	 * @returns {UplcByteArray}
 	 */
 	copy(newSite) {
@@ -12391,8 +12391,8 @@ export class UplcByteArray extends UplcValue {
 	 * Used by UplcString, UplcByteArray and UplcDataValue
 	 * Equivalent to E_B* function in Plutus-core docs
 	 * @internal
-	 * @param {BitWriter} bitWriter 
-	 * @param {number[]} bytes 
+	 * @param {BitWriter} bitWriter
+	 * @param {number[]} bytes
 	 * @param {boolean} pad
 	 */
 	static writeBytes(bitWriter, bytes, pad = true) {
@@ -12436,8 +12436,8 @@ export class UplcString extends UplcValue {
 	#value;
 
 	/**
-	 * @param {Site} site 
-	 * @param {string} value 
+	 * @param {Site} site
+	 * @param {string} value
 	 */
 	constructor(site, value) {
 		super(site);
@@ -12446,7 +12446,7 @@ export class UplcString extends UplcValue {
 
 	/**
 	 * Constructs a UplcStrin without requiring a Site
-	 * @param {string} value 
+	 * @param {string} value
 	 * @returns {UplcString}
 	 */
 	static new(value) {
@@ -12455,8 +12455,8 @@ export class UplcString extends UplcValue {
 
 	/**
 	 * Creates a new UplcString wrapped with UplcConst so it can be used as a term.
-	 * @param {Site} site 
-	 * @param {string} value 
+	 * @param {Site} site
+	 * @param {string} value
 	 * @returns {UplcConst}
 	 */
 	static newTerm(site, value) {
@@ -12464,7 +12464,7 @@ export class UplcString extends UplcValue {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -12482,7 +12482,7 @@ export class UplcString extends UplcValue {
 	}
 
 	/**
-	 * @param {Site} newSite 
+	 * @param {Site} newSite
 	 * @returns {UplcString}
 	 */
 	copy(newSite) {
@@ -12525,7 +12525,7 @@ export class UplcString extends UplcValue {
  */
 export class UplcUnit extends UplcValue {
 	/**
-	 * @param {Site} site 
+	 * @param {Site} site
 	 */
 	constructor(site) {
 		super(site);
@@ -12541,7 +12541,7 @@ export class UplcUnit extends UplcValue {
 
 	/**
 	 * Creates a new UplcUnit wrapped with UplcConst so it can be used as a term
-	 * @param {Site} site 
+	 * @param {Site} site
 	 * @returns {UplcConst}
 	 */
 	static newTerm(site) {
@@ -12549,7 +12549,7 @@ export class UplcUnit extends UplcValue {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -12566,7 +12566,7 @@ export class UplcUnit extends UplcValue {
 	}
 
 	/**
-	 * @param {Site} newSite 
+	 * @param {Site} newSite
 	 * @returns {UplcUnit}
 	 */
 	copy(newSite) {
@@ -12605,8 +12605,8 @@ export class UplcBool extends UplcValue {
 	#value;
 
 	/**
-	 * @param {Site} site 
-	 * @param {boolean} value 
+	 * @param {Site} site
+	 * @param {boolean} value
 	 */
 	constructor(site, value) {
 		super(site);
@@ -12615,7 +12615,7 @@ export class UplcBool extends UplcValue {
 
 	/**
 	 * Constructs a UplcBool without requiring a Site
-	 * @param {boolean} value 
+	 * @param {boolean} value
 	 * @returns {UplcBool}
 	 */
 	static new(value) {
@@ -12624,8 +12624,8 @@ export class UplcBool extends UplcValue {
 
 	/**
 	 * Creates a new UplcBool wrapped with UplcConst so it can be used as a term.
-	 * @param {Site} site 
-	 * @param {boolean} value 
+	 * @param {Site} site
+	 * @param {boolean} value
 	 * @returns {UplcConst}
 	 */
 	static newTerm(site, value) {
@@ -12633,7 +12633,7 @@ export class UplcBool extends UplcValue {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -12651,7 +12651,7 @@ export class UplcBool extends UplcValue {
 	}
 
 	/**
-	 * @param {Site} newSite 
+	 * @param {Site} newSite
 	 * @returns {UplcBool}
 	 */
 	copy(newSite) {
@@ -12718,8 +12718,8 @@ export class UplcPair extends UplcValue {
 
 	/**
 	 * Constructs a UplcPair without requiring a Site
-	 * @param {UplcValue} first 
-	 * @param {UplcValue} second 
+	 * @param {UplcValue} first
+	 * @param {UplcValue} second
 	 * @returns {UplcPair}
 	 */
 	static new(first, second) {
@@ -12728,7 +12728,7 @@ export class UplcPair extends UplcValue {
 
 	/**
 	 * Creates a new UplcBool wrapped with UplcConst so it can be used as a term.
-	 * @param {Site} site 
+	 * @param {Site} site
 	 * @param {UplcValue} first
 	 * @param {UplcValue} second
 	 * @returns {UplcConst}
@@ -12738,7 +12738,7 @@ export class UplcPair extends UplcValue {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -12757,7 +12757,7 @@ export class UplcPair extends UplcValue {
 	}
 
 	/**
-	 * @param {Site} newSite 
+	 * @param {Site} newSite
 	 * @returns {UplcPair}
 	 */
 	copy(newSite) {
@@ -12823,7 +12823,7 @@ export class UplcPair extends UplcValue {
 	}
 }
 
-/** 
+/**
  * Plutus-core list value class.
  * Only used during evaluation.
 */
@@ -12832,9 +12832,9 @@ export class UplcList extends UplcValue {
 	#items;
 
 	/**
-	 * @param {Site} site 
-	 * @param {UplcType} itemType 
-	 * @param {UplcValue[]} items 
+	 * @param {Site} site
+	 * @param {UplcType} itemType
+	 * @param {UplcValue[]} items
 	 */
 	constructor(site, itemType, items) {
 		super(site);
@@ -12844,15 +12844,15 @@ export class UplcList extends UplcValue {
 
 	/**
 	 * Constructs a UplcList without requiring a Site
-	 * @param {UplcType} type 
-	 * @param {UplcValue[]} items 
+	 * @param {UplcType} type
+	 * @param {UplcValue[]} items
 	 */
 	static new(type, items) {
 		return new UplcList(Site.dummy(), type, items);
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -12918,7 +12918,7 @@ export class UplcList extends UplcValue {
 	isDataList() {
 		return this.#itemType.isData();
 	}
-	
+
 	/**
 	 * @returns {boolean}
 	 */
@@ -12942,7 +12942,7 @@ export class UplcList extends UplcValue {
 	}
 
 	/**
-	 * @param {BitWriter} bitWriter 
+	 * @param {BitWriter} bitWriter
 	 */
 	toFlatValueInternal(bitWriter) {
 		for (let item of this.#items) {
@@ -12962,8 +12962,8 @@ export class UplcDataValue extends UplcValue {
 	#data;
 
 	/**
-	 * @param {Site} site 
-	 * @param {UplcData} data 
+	 * @param {Site} site
+	 * @param {UplcData} data
 	 */
 	constructor(site, data) {
 		super(site);
@@ -12972,7 +12972,7 @@ export class UplcDataValue extends UplcValue {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -12990,7 +12990,7 @@ export class UplcDataValue extends UplcValue {
 	}
 
 	/**
-	 * @param {Site} newSite 
+	 * @param {Site} newSite
 	 * @returns {UplcDataValue}
 	 */
 	copy(newSite) {
@@ -13033,7 +13033,7 @@ export class UplcDataValue extends UplcValue {
 	}
 
 	/**
-	 * @param {UplcDataValue | UplcData} data 
+	 * @param {UplcDataValue | UplcData} data
 	 * @returns {UplcData}
 	 */
 	static unwrap(data) {
@@ -13077,7 +13077,7 @@ export class UplcTerm {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -13095,17 +13095,17 @@ export class UplcTerm {
 	/**
 	 * Calculates a value, and also increments the cost
 	 * @internal
-	 * @param {UplcRte | UplcStack} rte 
+	 * @param {UplcRte | UplcStack} rte
 	 * @returns {Promise<UplcValue>}
 	 */
 	async eval(rte) {
 		throw new Error("not yet implemented");
 	}
-	
+
 	/**
 	 * Writes bits of flat encoded Plutus-core terms to bitWriter. Doesn't return anything.
 	 * @internal
-	 * @param {BitWriter} bitWriter 
+	 * @param {BitWriter} bitWriter
 	 * @param {null | Map<string, number>} codeMapFileIndices
 	 */
 	toFlat(bitWriter, codeMapFileIndices = null) {
@@ -13124,8 +13124,8 @@ export class UplcVariable extends UplcTerm {
 	index;
 
 	/**
-	 * @param {Site} site 
-	 * @param {UplcInt} index 
+	 * @param {Site} site
+	 * @param {UplcInt} index
 	 */
 	constructor(site, index) {
 		super(site, 0);
@@ -13133,7 +13133,7 @@ export class UplcVariable extends UplcTerm {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 */
 	transfer(other) {
 		return other.transferUplcVariable(
@@ -13151,7 +13151,7 @@ export class UplcVariable extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {BitWriter} bitWriter 
+	 * @param {BitWriter} bitWriter
 	 * @param {null | Map<string, number>} codeMapFileIndices
 	 */
 	toFlat(bitWriter, codeMapFileIndices = null) {
@@ -13199,8 +13199,8 @@ export class UplcDelay extends UplcTerm {
 	expr;
 
 	/**
-	 * @param {Site} site 
-	 * @param {UplcTerm} expr 
+	 * @param {Site} site
+	 * @param {UplcTerm} expr
 	 */
 	constructor(site, expr) {
 		super(site, 1);
@@ -13208,7 +13208,7 @@ export class UplcDelay extends UplcTerm {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -13219,7 +13219,7 @@ export class UplcDelay extends UplcTerm {
 	}
 
 	/**
-	 * @returns {string} 
+	 * @returns {string}
 	 */
 	toString() {
 		return `(delay ${this.expr.toString()})`;
@@ -13227,7 +13227,7 @@ export class UplcDelay extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {BitWriter} bitWriter 
+	 * @param {BitWriter} bitWriter
 	 * @param {null | Map<string, number>} codeMapFileIndices
 	 */
 	toFlat(bitWriter, codeMapFileIndices = null) {
@@ -13237,7 +13237,7 @@ export class UplcDelay extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {UplcRte | UplcStack} rte 
+	 * @param {UplcRte | UplcStack} rte
 	 * @returns {Promise<UplcValue>}
 	 */
 	async eval(rte) {
@@ -13248,9 +13248,9 @@ export class UplcDelay extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {UplcRte} rte 
+	 * @param {UplcRte} rte
 	 * @param {UplcFrame[]} stack
-	 * @param {ComputingState} state 
+	 * @param {ComputingState} state
 	 * @returns {CekState}
 	 */
 	computeCek(rte, stack, state) {
@@ -13283,7 +13283,7 @@ export class UplcLambda extends UplcTerm {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -13304,7 +13304,7 @@ export class UplcLambda extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {BitWriter} bitWriter 
+	 * @param {BitWriter} bitWriter
 	 * @param {null | Map<string, number>} codeMapFileIndices
 	 */
 	toFlat(bitWriter, codeMapFileIndices = null) {
@@ -13314,15 +13314,15 @@ export class UplcLambda extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {UplcRte | UplcStack} rte 
+	 * @param {UplcRte | UplcStack} rte
 	 * @returns {Promise<UplcValue>}
 	 */
 	async eval(rte) {
 		rte.incrLambdaCost();
 
 		return new UplcAnon(this.site, {
-			rte: rte, 
-			argNames: this.#argName !== null ? [this.#argName] : undefined, 
+			rte: rte,
+			argNames: this.#argName !== null ? [this.#argName] : undefined,
 			nArgs: 1,
 			fn: (callSite, subStack) => {
 				return this.expr.eval(subStack);
@@ -13333,9 +13333,9 @@ export class UplcLambda extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {UplcRte} rte 
+	 * @param {UplcRte} rte
 	 * @param {UplcFrame[]} stack
-	 * @param {ComputingState} state 
+	 * @param {ComputingState} state
 	 * @returns {CekState}
 	 */
 	computeCek(rte, stack, state) {
@@ -13400,13 +13400,13 @@ export class UplcCall extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {BitWriter} bitWriter 
+	 * @param {BitWriter} bitWriter
 	 * @param {null | Map<string, number>} codeMapFileIndices
 	 */
 	toFlat(bitWriter, codeMapFileIndices = null) {
 		if (codeMapFileIndices && this.site.codeMapSite) {
 			bitWriter.write('1011');
-			
+
 			const site = this.site.codeMapSite;
 			(new UplcInt(site, BigInt(assertDefined(codeMapFileIndices.get(site.src.name))), false)).toFlatUnsigned(bitWriter);
 			(new UplcInt(site, BigInt(site.startPos), false)).toFlatUnsigned(bitWriter);
@@ -13420,8 +13420,8 @@ export class UplcCall extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {UplcRte | UplcStack} rte 
-	 * @returns 
+	 * @param {UplcRte | UplcStack} rte
+	 * @returns
 	 */
 	async eval(rte) {
 		rte.incrCallCost();
@@ -13434,9 +13434,9 @@ export class UplcCall extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {ComputingState} state 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {ComputingState} state
 	 * @returns {CekState}
 	 */
 	computeCek(rte, stack, state) {
@@ -13458,7 +13458,7 @@ export class UplcConst extends UplcTerm {
 	value;
 
 	/**
-	 * @param {UplcValue} value 
+	 * @param {UplcValue} value
 	 */
 	constructor(value) {
 		super(value.site, 4);
@@ -13471,7 +13471,7 @@ export class UplcConst extends UplcTerm {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -13489,7 +13489,7 @@ export class UplcConst extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {BitWriter} bitWriter 
+	 * @param {BitWriter} bitWriter
 	 * @param {null | Map<string, number>} codeMapFileIndices
 	 */
 	toFlat(bitWriter, codeMapFileIndices = null) {
@@ -13499,7 +13499,7 @@ export class UplcConst extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {UplcStack | UplcRte} rte 
+	 * @param {UplcStack | UplcRte} rte
 	 * @returns {Promise<UplcValue>}
 	 */
 	async eval(rte) {
@@ -13510,9 +13510,9 @@ export class UplcConst extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {UplcRte} rte 
+	 * @param {UplcRte} rte
 	 * @param {UplcFrame[]} stack
-	 * @param {ComputingState} state 
+	 * @param {ComputingState} state
 	 * @returns {CekState}
 	 */
 	computeCek(rte, stack, state) {
@@ -13522,9 +13522,9 @@ export class UplcConst extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {PreCallFrame} frame 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {PreCallFrame} frame
 	 * @returns {CekState}
 	 */
 	reducePreCallFrame(rte, stack, frame) {
@@ -13537,9 +13537,9 @@ export class UplcConst extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {ForceFrame} frame 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {ForceFrame} frame
 	 * @returns {CekState}
 	 */
 	reduceForceFrame(rte, stack, frame) {
@@ -13570,7 +13570,7 @@ export class UplcForce extends UplcTerm {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -13589,26 +13589,26 @@ export class UplcForce extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {BitWriter} bitWriter 
+	 * @param {BitWriter} bitWriter
 	 * @param {null | Map<string, number>} codeMapFileIndices
 	 */
 	toFlat(bitWriter, codeMapFileIndices = null) {
 		if (codeMapFileIndices && this.site.codeMapSite) {
 			bitWriter.write('1101');
-			
+
 			const site = this.site.codeMapSite;
 			(new UplcInt(site, BigInt(assertDefined(codeMapFileIndices.get(site.src.name))), false)).toFlatUnsigned(bitWriter);
 			(new UplcInt(site, BigInt(site.startPos), false)).toFlatUnsigned(bitWriter);
 		} else {
 			bitWriter.write('0101');
 		}
-		
+
 		this.expr.toFlat(bitWriter, codeMapFileIndices);
 	}
 
 	/**
 	 * @internal
-	 * @param {UplcRte | UplcStack} rte 
+	 * @param {UplcRte | UplcStack} rte
 	 * @returns {Promise<UplcValue>}
 	 */
 	async eval(rte) {
@@ -13619,9 +13619,9 @@ export class UplcForce extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {ComputingState} state 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {ComputingState} state
 	 * @returns {CekState}
 	 */
 	computeCek(rte, stack, state) {
@@ -13639,8 +13639,8 @@ export class UplcError extends UplcTerm {
 	#msg;
 
 	/**
-	 * @param {Site} site 
-	 * @param {string} msg 
+	 * @param {Site} site
+	 * @param {string} msg
 	 */
 	constructor(site, msg = "") {
 		super(site, 6);
@@ -13648,7 +13648,7 @@ export class UplcError extends UplcTerm {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -13667,7 +13667,7 @@ export class UplcError extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {BitWriter} bitWriter 
+	 * @param {BitWriter} bitWriter
 	 * @param {null | Map<string, number>} codeMapFileIndices
 	 */
 	toFlat(bitWriter, codeMapFileIndices = null) {
@@ -13677,7 +13677,7 @@ export class UplcError extends UplcTerm {
 	/**
 	 * Throws a RuntimeError when evaluated.
 	 * @internal
-	 * @param {UplcRte | UplcStack} rte 
+	 * @param {UplcRte | UplcStack} rte
 	 * @returns {Promise<UplcValue>}
 	 */
 	async eval(rte) {
@@ -13686,9 +13686,9 @@ export class UplcError extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {ComputingState} state 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {ComputingState} state
 	 * @returns {CekState}
 	 */
 	computeCek(rte, stack, state) {
@@ -13700,7 +13700,7 @@ export class UplcError extends UplcTerm {
  * Plutus-core builtin function ref term
  */
 export class UplcBuiltin extends UplcTerm {
-	/** 
+	/**
 	 * Unknown builtins stay integers
 	 * @type {string | number}
 	 */
@@ -13717,14 +13717,14 @@ export class UplcBuiltin extends UplcTerm {
 	#nArgs;
 
 	/**
-	 * @param {Site} site 
-	 * @param {string | number} name 
+	 * @param {Site} site
+	 * @param {string | number} name
 	 */
 	constructor(site, name) {
 		super(site, 7);
 		this.#name = assertDefined(name);
 		this.#forceCount = (typeof this.#name === "string" && !this.#name.startsWith("macro__")) ? UPLC_BUILTINS[findUplcBuiltin("__core__" + this.#name)].forceCount : 0;
-		
+
 		if (this.isMacro()) {
 			this.#nArgs = -1;
 		} else if (typeof this.#name == "string") {
@@ -13739,7 +13739,7 @@ export class UplcBuiltin extends UplcTerm {
 	}
 
 	/**
-	 * @param {TransferUplcAst} other 
+	 * @param {TransferUplcAst} other
 	 * @returns {any}
 	 */
 	transfer(other) {
@@ -13757,7 +13757,7 @@ export class UplcBuiltin extends UplcTerm {
 	}
 
 	/**
-	 * @type {number} 
+	 * @type {number}
 	 */
 	get nArgs() {
 		return this.#nArgs;
@@ -13808,14 +13808,14 @@ export class UplcBuiltin extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {BitWriter} bitWriter 
+	 * @param {BitWriter} bitWriter
 	 * @param {null | Map<string, number>} codeMapFileIndices
 	 */
 	toFlat(bitWriter, codeMapFileIndices = null) {
 		bitWriter.write('0111');
 
-		/** 
-		 * @type {number} 
+		/**
+		 * @type {number}
 		 */
 		let i;
 
@@ -13899,7 +13899,7 @@ export class UplcBuiltin extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {UplcRte} rte 
+	 * @param {UplcRte} rte
 	 * @param {Site} site
 	 * @param {UplcValue[]} args
 	 * @returns {Promise<UplcValue>}
@@ -13916,7 +13916,7 @@ export class UplcBuiltin extends UplcTerm {
 
 	/**
 	 * @internal
-	 * @param {UplcRte} rte 
+	 * @param {UplcRte} rte
 	 * @param {Site} site
 	 * @param {UplcValue[]} args
 	 * @returns {UplcValue | Promise<UplcValue>}
@@ -13975,7 +13975,7 @@ export class UplcBuiltin extends UplcTerm {
 				return new UplcBool(site, a.int <= b.int);
 			},
 			appendByteString: (a, b) => {
-				return new UplcByteArray(site, a.bytes.concat(b.bytes));	
+				return new UplcByteArray(site, a.bytes.concat(b.bytes));
 			},
 			consByteString: (a, b) => {
 				let bytes = b.bytes;
@@ -13987,14 +13987,14 @@ export class UplcBuiltin extends UplcTerm {
 				}
 
 				bytes.unshift(byte);
-				
+
 				return new UplcByteArray(site, bytes);
 			},
 			sliceByteString: (a, b, c) => {
 				const bytes = c.bytes;
 				let start = Math.max(Number(a.int), 0);
 				let end = Math.min(Number(a.int) + Number(b.int) - 1, bytes.length - 1);
-				
+
 				if (end < start) {
 					return new UplcByteArray(site, []);
 				} else {
@@ -14045,7 +14045,7 @@ export class UplcBuiltin extends UplcTerm {
 				return new UplcByteArray(site, Crypto.sha3(a.bytes))
 			},
 			blake2b_256: (a) => {
-				return new UplcByteArray(site, Crypto.blake2b(a.bytes)); 
+				return new UplcByteArray(site, Crypto.blake2b(a.bytes));
 			},
 			verifyEd25519Signature: (key, msg, signature) => {
 				rte.calcAndIncrCost(this, key, msg, signature);
@@ -14056,7 +14056,7 @@ export class UplcBuiltin extends UplcTerm {
 				}
 
 				let msgBytes = msg.bytes;
-				
+
 				let signatureBytes = signature.bytes;
 				if (signatureBytes.length != 64) {
 					return rte.error(`expected signature of length 64 for verifyEd25519Signature, got signature of length ${signatureBytes.length}`);
@@ -14295,7 +14295,7 @@ export class UplcBuiltin extends UplcTerm {
 				throw new Error("no immediate need, so don't bother yet");
 			}
 		};
-			
+
 		return assertDefined(callbacks[this.#name], `UplcBuiltin ${this.#name} not yet implemented`)(...args);
 	}
 
@@ -14313,8 +14313,8 @@ export class UplcBuiltin extends UplcTerm {
 			case "addInteger":
 				// returning a lambda is assumed to be free
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						// but calling a lambda has a cost associated
 						rte.calcAndIncrCost(this, a, b);
@@ -14324,8 +14324,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "subtractInteger":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14334,8 +14334,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "multiplyInteger":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14344,8 +14344,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "divideInteger":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14371,8 +14371,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "modInteger":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14399,8 +14399,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "equalsInteger":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14409,8 +14409,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "lessThanInteger":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14419,8 +14419,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "lessThanEqualsInteger":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14429,8 +14429,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "appendByteString":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14439,11 +14439,11 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "consByteString":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
-						
+
 						let bytes = b.bytes;
 
 						const byte = Number(a.int)
@@ -14458,8 +14458,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "sliceByteString":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 3, 
+					rte: rte,
+					nArgs: 3,
 					fn: (callSite, _, a, b, c) => {
 						rte.calcAndIncrCost(this, a, b, c);
 
@@ -14480,13 +14480,13 @@ export class UplcBuiltin extends UplcTerm {
 
 						let sub = bytes.slice(start, start + n);
 
-						return new UplcByteArray(callSite, sub);		
+						return new UplcByteArray(callSite, sub);
 					}
 				});
 			case "lengthOfByteString":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14495,8 +14495,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "indexByteString":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14511,8 +14511,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "equalsByteString":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14521,8 +14521,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "lessThanByteString":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14531,8 +14531,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "lessThanEqualsByteString":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14541,8 +14541,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "appendString":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14551,8 +14551,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "equalsString":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14561,8 +14561,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "encodeUtf8":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14571,8 +14571,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "decodeUtf8":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14585,8 +14585,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "sha2_256":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14595,8 +14595,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "sha3_256":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14605,18 +14605,18 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "blake2b_256":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
-						return new UplcByteArray(callSite, Crypto.blake2b(a.bytes)); 
+						return new UplcByteArray(callSite, Crypto.blake2b(a.bytes));
 					}
 				});
 			case "verifyEd25519Signature":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 3, 
+					rte: rte,
+					nArgs: 3,
 					fn: (callSite, _, key, msg, signature) => {
 						rte.calcAndIncrCost(this, key, msg, signature);
 
@@ -14626,7 +14626,7 @@ export class UplcBuiltin extends UplcTerm {
 						}
 
 						let msgBytes = msg.bytes;
-						
+
 						let signatureBytes = signature.bytes;
 						if (signatureBytes.length != 64) {
 							throw new RuntimeError(`expected signature of length 64 for verifyEd25519Signature, got signature of length ${signatureBytes.length}`);
@@ -14639,8 +14639,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "ifThenElse":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 3, 
+					rte: rte,
+					nArgs: 3,
 					fn: (callSite, _, a, b, c) => {
 						rte.calcAndIncrCost(this, a, b, c);
 
@@ -14650,7 +14650,7 @@ export class UplcBuiltin extends UplcTerm {
 			case "chooseUnit":
 				// what is the point of this function?
 				return new UplcAnon(this.site, {
-					rte: rte, 
+					rte: rte,
 					nArgs: 2,
 					allowAnyArgs: true,
 					fn: (callSite, _, a, b) => {
@@ -14663,8 +14663,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "trace":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					allowAnyArgs: true,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
@@ -14680,8 +14680,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "fstPair":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14694,8 +14694,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "sndPair":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14708,8 +14708,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "chooseList":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 3, 
+					rte: rte,
+					nArgs: 3,
 					fn: (callSite, _, a, b, c) => {
 						rte.calcAndIncrCost(this, a, b, c);
 
@@ -14727,8 +14727,8 @@ export class UplcBuiltin extends UplcTerm {
 			case "mkCons":
 				// only allow data items in list
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14748,8 +14748,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "headList":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14767,8 +14767,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "tailList":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14786,8 +14786,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "nullList":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14800,7 +14800,7 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "chooseData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
+					rte: rte,
 					nArgs: 6,
 					allowAnyArgs: true,
 					fn: (callSite, _, a, b, c, d, e, f) => {
@@ -14829,8 +14829,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "constrData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14844,20 +14844,20 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "mapData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
 						return new UplcDataValue(callSite, new MapData(a.list.map(pair => {
 							return [pair.first.data, pair.second.data];
 						})));
-					}	
+					}
 				});
 			case "listData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14866,18 +14866,18 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "iData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
-						
+
 						return new UplcDataValue(callSite, new IntData(a.int));
 					}
 				});
 			case "bData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14886,8 +14886,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "unConstrData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14905,8 +14905,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "unMapData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14924,8 +14924,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "unListData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14943,8 +14943,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "unIData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14962,8 +14962,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "unBData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -14981,8 +14981,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "equalsData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -14999,8 +14999,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "mkPairData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 2, 
+					rte: rte,
+					nArgs: 2,
 					fn: (callSite, _, a, b) => {
 						rte.calcAndIncrCost(this, a, b);
 
@@ -15009,8 +15009,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "mkNilData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -15021,8 +15021,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "mkNilPairData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -15033,8 +15033,8 @@ export class UplcBuiltin extends UplcTerm {
 				});
 			case "serialiseData":
 				return new UplcAnon(this.site, {
-					rte: rte, 
-					nArgs: 1, 
+					rte: rte,
+					nArgs: 1,
 					fn: (callSite, _, a) => {
 						rte.calcAndIncrCost(this, a);
 
@@ -15042,14 +15042,40 @@ export class UplcBuiltin extends UplcTerm {
 					}
 				});
 			case "verifyEcdsaSecp256k1Signature":
+				return new UplcAnon(this.site, {
+					rte: rte,
+					nArgs: 3,
+					fn: (callSite, _, key, msgHash, signature) => {
+						rte.calcAndIncrCost(this, key, msgHash, signature);
+
+						let keyBytes = new Uint8Array(key.bytes);
+						if (keyBytes.length != 33) {
+							throw callSite.referenceError(`expected key of length 33 for verifyEcdsaSecp256k1Signature, got key of length ${keyBytes.length}`);
+						}
+
+						let msgHashBytes = new Uint8Array(msgHash.bytes);
+						if (msgHashBytes.length != 32) {
+							throw callSite.referenceError(`expected message (hash) of length 32 for verifyEcdsaSecp256k1Signature, got message (hash) of length ${keyBytes.length}`);
+						}
+
+						let signatureBytes = new Uint8Array(signature.bytes);
+						if (signatureBytes.length != 64) {
+							throw callSite.referenceError(`expected signature of length 64 for verifyEcdsaSecp256k1Signature, got signature of length ${signatureBytes.length}`);
+						}
+
+						let ok = global.secp256k1.ecdsaVerify(signatureBytes, msgHashBytes, keyBytes);
+
+						return new UplcBool(callSite, ok);
+					}
+				});
 			case "verifySchnorrSecp256k1Signature":
 				throw new Error("no immediate need, so don't bother yet");
 			default: {
 				const name = this.#name;
 				if (typeof name == "string" && name.startsWith("macro__")) {
 					return new UplcAnon(this.site, {
-						rte: rte, 
-						nArgs: -1, 
+						rte: rte,
+						nArgs: -1,
 						allowAnyArgs: true,
 						fn: (callSite, _, ...args) => {
 							return rte.callMacro(name.slice(("macro__").length), args.slice(0, args.length - 1));
@@ -15074,7 +15100,7 @@ export class UplcBuiltin extends UplcTerm {
 	 * Returns appropriate callback wrapped with UplcAnon depending on builtin name.
 	 * Emulates every Plutus-core that Helios exposes to the user.
 	 * @internal
-	 * @param {UplcRte | UplcStack} rte 
+	 * @param {UplcRte | UplcStack} rte
 	 * @returns {Promise<UplcValue>}
 	 */
 	async eval(rte) {
@@ -15094,7 +15120,7 @@ export class UplcBuiltin extends UplcTerm {
 				v = new UplcDelayedValue(this.site, () => vPrev);
 			}
 		}
- 
+
 		return v;
 	}
 }
@@ -15104,9 +15130,9 @@ export class UplcBuiltin extends UplcTerm {
  */
 export class UplcFrame {
 	/**
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {ReducingState} state 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {ReducingState} state
 	 * @returns {Promise<CekState>}
 	 */
 	async reduceCek(rte, stack, state) {
@@ -15152,9 +15178,9 @@ export class ForceFrame extends UplcFrame {
 	}
 
 	/**
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {ReducingState} state 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {ReducingState} state
 	 * @returns {Promise<CekState>}
 	 */
 	async reduceCek(rte, stack, state) {
@@ -15198,10 +15224,10 @@ export class PreCallFrame extends UplcFrame {
 	}
 
 	/**
-	 * 
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {ReducingState} state 
+	 *
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {ReducingState} state
 	 * @returns {Promise<CekState>}
 	 */
 	async reduceCek(rte, stack, state) {
@@ -15253,9 +15279,9 @@ export class CallFrame extends UplcFrame {
 	}
 
 	/**
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {ReducingState} state 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {ReducingState} state
 	 * @returns {Promise<CekState>}
 	 */
 	async reduceCek(rte, stack, state) {
@@ -15281,8 +15307,8 @@ class UplcTermWithEnv {
     env;
 
     /**
-     * @param {T} term 
-     * @param {CekEnv} env 
+     * @param {T} term
+     * @param {CekEnv} env
      */
     constructor(term, env) {
         this.term = term;
@@ -15307,9 +15333,9 @@ class UplcTermWithEnv {
  */
 class UplcLambdaWithEnv extends UplcTermWithEnv {
 	/**
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {PreCallFrame} frame 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {PreCallFrame} frame
 	 * @returns {Promise<CekState>}
 	 */
 	async reducePreCallFrame(rte, stack, frame) {
@@ -15318,9 +15344,9 @@ class UplcLambdaWithEnv extends UplcTermWithEnv {
 	}
 
 	/**
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {ForceFrame} frame 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {ForceFrame} frame
 	 * @returns {Promise<CekState>}
 	 */
 	async reduceForceFrame(rte, stack, frame) {
@@ -15328,15 +15354,15 @@ class UplcLambdaWithEnv extends UplcTermWithEnv {
 	}
 
 	/**
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {ReducingState} state 
-	 * @param {CallFrame} frame 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {ReducingState} state
+	 * @param {CallFrame} frame
 	 * @returns {Promise<CekState>}
 	 */
 	async reduceCallFrame(rte, stack, state, frame) {
 		return {
-			computing: this.term.expr, 
+			computing: this.term.expr,
 			env: {
 				values: this.env.values.concat([state.reducing]),
 				callSites: frame.env.callSites.concat([frame.term.callSite])
@@ -15351,9 +15377,9 @@ class UplcLambdaWithEnv extends UplcTermWithEnv {
  */
 class UplcDelayWithEnv extends UplcTermWithEnv {
 	/**
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {PreCallFrame} frame 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {PreCallFrame} frame
 	 * @returns {CekState}
 	 */
 	reducePreCallFrame(rte, stack, frame) {
@@ -15361,14 +15387,14 @@ class UplcDelayWithEnv extends UplcTermWithEnv {
 	}
 
 	/**
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {ForceFrame} frame 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {ForceFrame} frame
 	 * @returns {CekState}
 	 */
 	reduceForceFrame(rte, stack, frame) {
 		return {
-			computing: this.term.expr, 
+			computing: this.term.expr,
 			env: {
 				values: this.env.values,
 				callSites: frame.env.callSites.concat([frame.term.site])
@@ -15389,7 +15415,7 @@ class UplcAnonValue extends UplcValue {
 
     /**
      * @param {Site} site
-     * @param {AppliedUplcBuiltin | UplcLambdaWithEnv | UplcDelayWithEnv} term 
+     * @param {AppliedUplcBuiltin | UplcLambdaWithEnv | UplcDelayWithEnv} term
      */
     constructor(site, term) {
         super(site);
@@ -15468,7 +15494,7 @@ class AppliedUplcBuiltin {
     }
 
     /**
-     * @param {CekValue} arg 
+     * @param {CekValue} arg
      * @returns {AppliedUplcBuiltin}
      */
     apply(arg) {
@@ -15546,7 +15572,7 @@ class AppliedUplcBuiltin {
 				} else {
 					site = site.codeMapSite;
 				}
-				
+
 				res = await this.term.evalBuiltin(rte, site, args);
 			} else {
 				res = await this.term.evalBuiltin(rte, site, args);
@@ -15561,9 +15587,9 @@ class AppliedUplcBuiltin {
     }
 
 	/**
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {PreCallFrame} frame 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {PreCallFrame} frame
 	 * @returns {Promise<CekState>}
 	 */
 	async reducePreCallFrame(rte, stack, frame) {
@@ -15572,9 +15598,9 @@ class AppliedUplcBuiltin {
 	}
 
 	/**
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {ForceFrame} frame 
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {ForceFrame} frame
 	 * @returns {Promise<CekState>}
 	 */
 	async reduceForceFrame(rte, stack, frame) {
@@ -15586,11 +15612,11 @@ class AppliedUplcBuiltin {
 	}
 
 	/**
-	 * 
-	 * @param {UplcRte} rte 
-	 * @param {UplcFrame[]} stack 
-	 * @param {ReducingState} state 
-	 * @param {CallFrame} frame 
+	 *
+	 * @param {UplcRte} rte
+	 * @param {UplcFrame[]} stack
+	 * @param {ReducingState} state
+	 * @param {CallFrame} frame
 	 * @returns {Promise<CekState>}
 	 */
 	async reduceCallFrame(rte, stack, state, frame) {
@@ -15606,7 +15632,7 @@ class AppliedUplcBuiltin {
 
 				if (rte.hasError()) {
 					return {
-						error: rte.getError(), 
+						error: rte.getError(),
 						env: {
 							values: frame.env.values,
 							callSites: callSites
@@ -15746,7 +15772,7 @@ export async function evalCek(rte, start, args = null) {
 					lines.push(`ERROR ${msg}`);
 				}
 
-				
+
 			} else {
 				lines = lines.concat(err.message.split("\n").filter(l => l != summary));
 			}
@@ -15759,6 +15785,7 @@ export async function evalCek(rte, start, args = null) {
 		}
 	}
 }
+
 
 
 ///////////////////////////
@@ -19895,6 +19922,7 @@ export const ByteArrayType = new GenericType({
     genInstanceMembers: (self) => ({
         ...genCommonInstanceMembers(self),
         blake2b: new FuncType([], self),
+        verify_ecdsa_secp256k1_signature: new FuncType([ByteArrayType, ByteArrayType], BoolType),
         decode_utf8: new FuncType([], StringType),
         ends_with: new FuncType([self], BoolType),
         length: IntType,
@@ -20082,6 +20110,7 @@ export const StringType = new GenericType({
         __add: new FuncType([self, self], self)
     })
 });
+
 
 
 ///////////////////////////////////////
@@ -25255,6 +25284,13 @@ function makeRawFunctions(simplify) {
 			__core__blake2b_256(self)
 		}
 	}`));
+	// TODO: Better type & interface
+	add(new RawFunc("__helios__bytearray__verify_ecdsa_secp256k1_signature",
+	`(self) -> {
+		(message_hash, signature) -> {
+			__core__verifyEcdsaSecp256k1Signature(self, message_hash, signature)
+		}
+	}`));
 	add(new RawFunc("__helios__bytearray__decode_utf8",
 	`(self) -> {
 		() -> {
@@ -27278,7 +27314,6 @@ function makeRawFunctions(simplify) {
 			__core__verifyEd25519Signature(self, message, signature)
 		}
 	}`));
-
 
 	// ScriptContext builtins
 	addDataFuncs("__helios__scriptcontext");
@@ -51348,7 +51383,6 @@ export class RemoteWallet {
 // Section 37: Network
 //////////////////////
 
-
 /**
  * Blockchain query interface.
  * @interface
@@ -51428,7 +51462,7 @@ export class BlockfrostV0 {
 
     /**
      * Connects to the same network a given `Wallet` is connected to (preview, preprod or mainnet).
-     * 
+     *
      * Throws an error if a Blockfrost project_id is missing for that specific network.
      * @param {Wallet} wallet
      * @param {{
@@ -51456,7 +51490,7 @@ export class BlockfrostV0 {
 
      /**
      * Connects to the same network a given `Wallet` or the given `TxInput` (preview, preprod or mainnet).
-     * 
+     *
      * Throws an error if a Blockfrost project_id is missing for that specific network.
      * @param {TxInput | Wallet} utxoOrWallet
      * @param {{
@@ -51553,8 +51587,8 @@ export class BlockfrostV0 {
 
         const responseObj = await response.json();
 
-        
-        
+
+
         const outputs = responseObj.outputs;
 
         if (!outputs) {
@@ -51606,7 +51640,7 @@ export class BlockfrostV0 {
      *   data_hash: null | string
      *   collateral: boolean
      *   reference_script_hash: null | string
-     * }} obj 
+     * }} obj
      */
     async restoreTxInput(obj) {
         /**
@@ -51660,7 +51694,7 @@ export class BlockfrostV0 {
             });
 
             if (response.status == 404) {
-                return []; 
+                return [];
             }
 
             /**
@@ -51695,7 +51729,7 @@ export class BlockfrostV0 {
      * @returns {Promise<TxId>}
      */
     async submitTx(tx) {
-        const data = new Uint8Array(tx.toCbor());
+        const data = Buffer.from(tx.toCbor());
         const url = `https://cardano-${this.#networkName}.blockfrost.io/api/v0/tx/submit`;
 
         const response = await fetch(url, {

@@ -148,6 +148,7 @@ export const ByteArrayType = new GenericType({
     genInstanceMembers: (self) => ({
         ...genCommonInstanceMembers(self),
         blake2b: new FuncType([], self),
+        verify_ecdsa_secp256k1_signature: new FuncType([ByteArrayType, ByteArrayType], BoolType),
         decode_utf8: new FuncType([], StringType),
         ends_with: new FuncType([self], BoolType),
         length: IntType,
