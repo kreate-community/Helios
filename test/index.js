@@ -20,7 +20,9 @@ async function main() {
 		"./ed25519.js",
 		"./example-scripts.js",
 		"./exbudget.js",
-		"./inline.js",
+		// FIXME: Implement secp256k1 support without an extra dep
+		// And be browser-compatible
+		// "./inline.js",
 		"./metadata.js",
 		"./modules.js",
 		"./profile.js",

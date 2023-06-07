@@ -19,7 +19,7 @@ import {
     Value
 } from "./helios-data.js";
 
-import { 
+import {
     NetworkParams
 } from "./uplc-costmodels.js";
 
@@ -38,7 +38,7 @@ import {
     WalletHelper
 } from "./wallets.js";
 
-
+import fetch from "node-fetch";
 
 /**
  * @typedef {{
@@ -251,7 +251,7 @@ export class BlockfrostV0 {
      * @returns {Promise<TxId>}
      */
     async submitTx(tx) {
-        const data = new Uint8Array(tx.toCbor());
+        const data = Buffer.from(tx.toCbor());
         const url = `https://cardano-${this.#networkName}.blockfrost.io/api/v0/tx/submit`;
 
         const response = await fetch(url, {

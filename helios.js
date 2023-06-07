@@ -10300,6 +10300,8 @@ export function isUplcBuiltin(name, strict = false) {
 // Section 10: Uplc AST
 ///////////////////////
 
+import secp256k1 from 'secp256k1';
+
 /**
  * A Helios/Uplc Program can have different purposes
  * @typedef {"testing" | "minting" | "spending" | "staking" | "linking" | "module" | "unknown"} ScriptPurpose
@@ -13310,6 +13312,28 @@ class UplcBuiltin extends UplcTerm {
 					return new UplcByteArray(callSite, a.data.toCbor());
 				});
 			case "verifyEcdsaSecp256k1Signature":
+				return new UplcAnon(this.site, rte, 3, (callSite, _, key, msgHash, signature) => {
+					rte.calcAndIncrCost(this, key, msgHash, signature);
+
+					let keyBytes = new Uint8Array(key.bytes);
+					if (keyBytes.length != 33) {
+						throw callSite.runtimeError(`expected key of length 33 for verifyEcdsaSecp256k1Signature, got key of length ${keyBytes.length}`);
+					}
+
+					let msgHashBytes = new Uint8Array(msgHash.bytes);
+					if (msgHashBytes.length != 32) {
+						throw callSite.runtimeError(`expected message (hash) of length 32 for verifyEcdsaSecp256k1Signature, got message (hash) of length ${keyBytes.length}`);
+					}
+
+					let signatureBytes = new Uint8Array(signature.bytes);
+					if (signatureBytes.length != 64) {
+						throw callSite.runtimeError(`expected signature of length 64 for verifyEcdsaSecp256k1Signature, got signature of length ${signatureBytes.length}`);
+					}
+
+					let ok = secp256k1.ecdsaVerify(signatureBytes, msgHashBytes, keyBytes);
+
+					return new UplcBool(callSite, ok);
+				});
 			case "verifySchnorrSecp256k1Signature":
 				throw new Error("no immediate need, so don't bother yet");
 			default: {
@@ -17298,6 +17322,7 @@ const ByteArrayType = new GenericType({
     genInstanceMembers: (self) => ({
         ...genCommonInstanceMembers(self),
         blake2b: new FuncType([], self),
+        verify_ecdsa_secp256k1_signature: new FuncType([ByteArrayType, ByteArrayType], BoolType),
         decode_utf8: new FuncType([], StringType),
         ends_with: new FuncType([self], BoolType),
         length: IntType,
@@ -17485,6 +17510,7 @@ const StringType = new GenericType({
         __add: new FuncType([self, self], self)
     })
 });
+
 
 
 ///////////////////////////////////////
@@ -32251,6 +32277,13 @@ function makeRawFunctions() {
 			__core__blake2b_256(self)
 		}
 	}`));
+	// TODO: Better type & interface
+	add(new RawFunc("__helios__bytearray__verify_ecdsa_secp256k1_signature",
+	`(self) -> {
+		(message_hash, signature) -> {
+			__core__verifyEcdsaSecp256k1Signature(self, message_hash, signature)
+		}
+	}`));
 	add(new RawFunc("__helios__bytearray__decode_utf8",
 	`(self) -> {
 		() -> {
@@ -34174,7 +34207,6 @@ function makeRawFunctions() {
 			__core__verifyEd25519Signature(self, message, signature)
 		}
 	}`));
-
 
 	// ScriptContext builtins
 	addDataFuncs("__helios__scriptcontext");
@@ -46824,7 +46856,7 @@ export class RemoteWallet {
 // Section 37: Network
 //////////////////////
 
-
+import fetch from "node-fetch";
 
 /**
  * @typedef {{
@@ -47037,7 +47069,7 @@ export class BlockfrostV0 {
      * @returns {Promise<TxId>}
      */
     async submitTx(tx) {
-        const data = new Uint8Array(tx.toCbor());
+        const data = Buffer.from(tx.toCbor());
         const url = `https://cardano-${this.#networkName}.blockfrost.io/api/v0/tx/submit`;
 
         const response = await fetch(url, {

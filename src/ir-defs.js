@@ -1677,6 +1677,13 @@ function makeRawFunctions() {
 			__core__blake2b_256(self)
 		}
 	}`));
+	// TODO: Better type & interface
+	add(new RawFunc("__helios__bytearray__verify_ecdsa_secp256k1_signature",
+	`(self) -> {
+		(message_hash, signature) -> {
+			__core__verifyEcdsaSecp256k1Signature(self, message_hash, signature)
+		}
+	}`));
 	add(new RawFunc("__helios__bytearray__decode_utf8",
 	`(self) -> {
 		() -> {
@@ -3600,7 +3607,6 @@ function makeRawFunctions() {
 			__core__verifyEd25519Signature(self, message, signature)
 		}
 	}`));
-
 
 	// ScriptContext builtins
 	addDataFuncs("__helios__scriptcontext");

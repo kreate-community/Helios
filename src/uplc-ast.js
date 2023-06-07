@@ -51,6 +51,8 @@ import {
     UplcData
 } from "./uplc-data.js";
 
+import secp256k1 from 'secp256k1';
+
 /**
  * A Helios/Uplc Program can have different purposes
  * @typedef {"testing" | "minting" | "spending" | "staking" | "linking" | "module" | "unknown"} ScriptPurpose
@@ -3061,6 +3063,28 @@ export class UplcBuiltin extends UplcTerm {
 					return new UplcByteArray(callSite, a.data.toCbor());
 				});
 			case "verifyEcdsaSecp256k1Signature":
+				return new UplcAnon(this.site, rte, 3, (callSite, _, key, msgHash, signature) => {
+					rte.calcAndIncrCost(this, key, msgHash, signature);
+
+					let keyBytes = new Uint8Array(key.bytes);
+					if (keyBytes.length != 33) {
+						throw callSite.runtimeError(`expected key of length 33 for verifyEcdsaSecp256k1Signature, got key of length ${keyBytes.length}`);
+					}
+
+					let msgHashBytes = new Uint8Array(msgHash.bytes);
+					if (msgHashBytes.length != 32) {
+						throw callSite.runtimeError(`expected message (hash) of length 32 for verifyEcdsaSecp256k1Signature, got message (hash) of length ${keyBytes.length}`);
+					}
+
+					let signatureBytes = new Uint8Array(signature.bytes);
+					if (signatureBytes.length != 64) {
+						throw callSite.runtimeError(`expected signature of length 64 for verifyEcdsaSecp256k1Signature, got signature of length ${signatureBytes.length}`);
+					}
+
+					let ok = secp256k1.ecdsaVerify(signatureBytes, msgHashBytes, keyBytes);
+
+					return new UplcBool(callSite, ok);
+				});
 			case "verifySchnorrSecp256k1Signature":
 				throw new Error("no immediate need, so don't bother yet");
 			default: {

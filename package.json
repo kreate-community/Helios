@@ -37,6 +37,11 @@
     "off-chain"
   ],
   "devDependencies": {
+    "@types/node": "^20.2.5",
     "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.1",
+    "secp256k1": "^5.0.0"
   }
 }
