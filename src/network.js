@@ -19,11 +19,11 @@ import {
     Value
 } from "./helios-data.js";
 
-import { 
+import {
     NetworkParams
 } from "./uplc-costmodels.js";
 
-import { 
+import {
     UplcProgram
 } from "./uplc-program.js";
 
@@ -42,6 +42,7 @@ import {
     WalletHelper
 } from "./wallets.js";
 
+import fetch from "node-fetch";
 
 /**
  * Blockchain query interface.
@@ -122,7 +123,7 @@ export class BlockfrostV0 {
 
     /**
      * Connects to the same network a given `Wallet` is connected to (preview, preprod or mainnet).
-     * 
+     *
      * Throws an error if a Blockfrost project_id is missing for that specific network.
      * @param {Wallet} wallet
      * @param {{
@@ -150,7 +151,7 @@ export class BlockfrostV0 {
 
      /**
      * Connects to the same network a given `Wallet` or the given `TxInput` (preview, preprod or mainnet).
-     * 
+     *
      * Throws an error if a Blockfrost project_id is missing for that specific network.
      * @param {TxInput | Wallet} utxoOrWallet
      * @param {{
@@ -247,8 +248,8 @@ export class BlockfrostV0 {
 
         const responseObj = await response.json();
 
-        
-        
+
+        // @ts-ignore
         const outputs = responseObj.outputs;
 
         if (!outputs) {
@@ -300,7 +301,7 @@ export class BlockfrostV0 {
      *   data_hash: null | string
      *   collateral: boolean
      *   reference_script_hash: null | string
-     * }} obj 
+     * }} obj
      */
     async restoreTxInput(obj) {
         /**
@@ -316,7 +317,7 @@ export class BlockfrostV0 {
                     "project_id": this.#projectId
                 }
             });
-
+            // @ts-ignore
             const cbor = (await response.json()).cbor;
 
             refScript = UplcProgram.fromCbor(cbor);
@@ -354,7 +355,7 @@ export class BlockfrostV0 {
             });
 
             if (response.status == 404) {
-                return []; 
+                return [];
             }
 
             /**
@@ -389,7 +390,7 @@ export class BlockfrostV0 {
      * @returns {Promise<TxId>}
      */
     async submitTx(tx) {
-        const data = new Uint8Array(tx.toCbor());
+        const data = Buffer.from(tx.toCbor());
         const url = `https://cardano-${this.#networkName}.blockfrost.io/api/v0/tx/submit`;
 
         const response = await fetch(url, {
