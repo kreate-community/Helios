@@ -42327,12 +42327,12 @@ export class BlockfrostV0 {
 
     /**
      * Determine the network which the wallet is connected to.
-     * @param {Wallet} wallet 
+     * @param {Wallet} wallet
      * @param {{
      *     preview?: string,
      *     preprod?: string,
      *     mainnet?: string
-     * }} projectIds 
+     * }} projectIds
      * @returns {Promise<BlockfrostV0>}
      */
     static async resolve(wallet, projectIds) {
@@ -42355,8 +42355,8 @@ export class BlockfrostV0 {
                     if (await preprodNetwork.hasUtxo(refUtxo)) {
                         return preprodNetwork;
                     }
-                } 
-                
+                }
+
                 if (previewProjectId !== undefined) {
                     const previewNetwork = new BlockfrostV0("preview", previewProjectId);
 
@@ -42377,8 +42377,8 @@ export class BlockfrostV0 {
     }
 
     /**
-     * @param {any} obj 
-     * @returns 
+     * @param {any} obj
+     * @returns
      */
     static parseValue(obj) {
         let value = new Value();
@@ -42428,7 +42428,7 @@ export class BlockfrostV0 {
     /**
      * Returns oldest UTxOs first, newest last.
      * TODO: pagination
-     * @param {Address} address 
+     * @param {Address} address
      * @returns {Promise<UTxO[]>}
      */
     async getUtxos(address) {
@@ -42440,13 +42440,13 @@ export class BlockfrostV0 {
             }
         });
 
-        /** 
-         * @type {any} 
+        /**
+         * @type {any}
          */
         let all = await response.json();
 
         if (all?.status_code >= 300) {
-            all = []; 
+            all = [];
         }
 
         return all.map(obj => {
@@ -42456,14 +42456,14 @@ export class BlockfrostV0 {
                 new TxOutput(
                     address,
                     BlockfrostV0.parseValue(obj.amount),
-                    Datum.inline(ConstrData.fromCbor(hexToBytes(obj.inline_datum)))
+                    obj.inline_datum ? Datum.inline(ConstrData.fromCbor(hexToBytes(obj.inline_datum))) : undefined
                 )
             );
         });
-    }  
+    }
 
-    /** 
-     * @param {Tx} tx 
+    /**
+     * @param {Tx} tx
      * @returns {Promise<TxId>}
      */
     async submitTx(tx) {
@@ -42487,10 +42487,11 @@ export class BlockfrostV0 {
         if (response.status != 200) {
             throw new Error(responseText);
         } else {
-            return new TxId(JSON.parse(responseText));  
+            return new TxId(JSON.parse(responseText));
         }
-    }   
+    }
 }
+
 
 
 ///////////////////////
