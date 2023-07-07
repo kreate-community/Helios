@@ -74,10 +74,10 @@ import {
     genCommonEnumTypeMembers
 } from "./eval-primitives.js";
 
-import { 
+import {
     Parameter,
     ParametricFunc,
-    DefaultTypeClass 
+    DefaultTypeClass
 } from "./eval-parametric.js";
 
 import {
@@ -449,9 +449,9 @@ export class MacroType extends Common {
     }
 
     /**
-     * @param {Site} site 
-     * @param {InferenceMap} map 
-     * @param {null | Type} type 
+     * @param {Site} site
+     * @param {InferenceMap} map
+     * @param {null | Type} type
      * @returns {Type}
      */
     infer(site, map, type) {
@@ -459,7 +459,7 @@ export class MacroType extends Common {
     }
 
     /**
-     * @param {Type} other 
+     * @param {Type} other
      * @returns {boolean}
      */
     isBaseOf(other) {
@@ -496,13 +496,13 @@ export class ScriptsType extends MacroType {
     #scripts;
 
     /**
-     * @param {ScriptTypes} scripts 
+     * @param {ScriptTypes} scripts
      */
     constructor(scripts) {
         super();
 
         this.#scripts = {};
-        
+
         for (let k in scripts) {
             this.#scripts[k] = scripts[k].toTyped();
         }
@@ -539,7 +539,7 @@ export class ScriptsType extends MacroType {
     }
 
     /**
-     * @param {Type} other 
+     * @param {Type} other
      * @returns {boolean}
      */
     isBaseOf(other) {
@@ -586,7 +586,7 @@ export class ScriptContextType extends MacroType {
             get_script_purpose: new FuncType([], ScriptPurposeType),
             tx: TxType
         };
-        
+
         return members;
 	}
 
@@ -611,7 +611,7 @@ export class ScriptContextType extends MacroType {
 	}
 
     /**
-     * @param {Type} other 
+     * @param {Type} other
      * @returns {boolean}
      */
     isBaseOf(other) {
@@ -656,7 +656,7 @@ export class ContractContextType extends MacroType {
     }
 
     /**
-     * @param {Type} other 
+     * @param {Type} other
      * @returns {boolean}
      */
     isBaseOf(other) {
@@ -706,9 +706,9 @@ export const ScriptPurposeType = new GenericType({
         new_certifying: new FuncType([DCertType], ScriptPurposeCertifyingType),
         new_minting: new FuncType([MintingPolicyHashType], ScriptPurposeMintingType),
         new_rewarding: new FuncType([StakingCredentialType], ScriptPurposeTypeRewarding),
-        new_spending: new FuncType([TxOutputIdType], ScriptPurposeSpendingType), 
+        new_spending: new FuncType([TxOutputIdType], ScriptPurposeSpendingType),
     })
-}); 
+});
 
 /**
  * Builtin ScriptPurpose::Certifying
@@ -996,7 +996,7 @@ export const TxType = new GenericType({
         new: (() => {
             const a = new Parameter("a", `${FTPP}0`, new DefaultTypeClass());
             const b = new Parameter("b", `${FTPP}1`, new DefaultTypeClass());
-            
+
             return new ParametricFunc([a, b], new FuncType([
                 ListType$(TxInputType), // 0
                 ListType$(TxInputType), // 1
@@ -1086,6 +1086,7 @@ export const TxOutputType = new GenericType({
  */
 export const TxOutputIdType = new GenericType({
     name: "TxOutputId",
+    offChainType: TxOutputId,
     genTypeDetails: (self) => ({
         inputType: "{txId: number[] | string | helios.TxId, utxoId: number | bigint} | helios.TxOutputId",
         outputType: "helios.TxOutputId",

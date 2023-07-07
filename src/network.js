@@ -171,6 +171,7 @@ export class BlockfrostV0 {
             }
         });
 
+        // @ts-ignore
         const obj = (await response.json()).outputs[id.utxoIdx];
 
         return new UTxO(
